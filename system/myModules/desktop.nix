@@ -1,4 +1,4 @@
-{pkgs, config, lib,  ...}
+{pkgs, config, lib,  ...}:
 let
 
     chosenDesktop = "kde"; #gnome #lxqt
@@ -7,14 +7,9 @@ in
 {
     services.xserver.enable = true;
 
-    services.xserver.xkb = {
-        layout = "latam";
-        variant = "";
-    };
-
     #displayManager
 
-    services.displayManager.sddm.enable = (chosenDesktop == "kde" || chosenDesktop == "lxqt");
+    services.displayManager.sddm.enable = (chosenDesktop == "kde"); # || chosenDesktop == "lxqt");
 
     services.displayManager.gdm.enable = (chosenDesktop == "gnome");
 
@@ -24,6 +19,6 @@ in
 
     services.desktopManager.gnome.enable = (chosenDesktop == "gnome");
 
-    services.desktopManager.lxqt.enable = (chosenDesktop == "lxqt");
+  # services.desktopManager.lxqt.enable = (chosenDesktop == "lxqt");
 
 }

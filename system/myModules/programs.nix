@@ -11,6 +11,8 @@
         stable.aseprite
         stable.blender
 
+        stable.librewolf
+
         (stable.vscode-with-extensions.override {
 
             vscodeExtensions = [

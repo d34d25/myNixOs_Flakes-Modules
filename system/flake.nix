@@ -40,8 +40,13 @@
       modules = [
 
         ./configuration.nix
+
         ./myModules/sys-settings.nix
+
+        ./myModules/desktop.nix
+
         ./myModules/nvidia-drivers.nix
+
         ./myModules/programs.nix
 
       ];

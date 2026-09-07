@@ -30,6 +30,7 @@
           pkgs.raylib
           pkgs.gcc
           pkgs.gdb
+          pkgs.python3
           #-------------
 
           pkgs.libGL

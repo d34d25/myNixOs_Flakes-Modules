@@ -1,59 +1,50 @@
 {
-  description = "flake for system, divided into modules";
+	description = "flake for the system";
+	
+	inputs = {
+	
+			nixpkgs-stable.url = "github:nixos/nixpkgs?ref=nixos-26.05";
 
-  inputs = {
+    		nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+ 	 };
 
-    nixpkgs-unstable.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+  	outputs = {self, nixpkgs-stable, nixpkgs-unstable, ...} @inputs:
+  	let
+		system = "x86_64-linux";
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs?ref=nixos-26.05";
+		commonModules = [
+			./configuration.nix
+		];
 
-  };
+		stable = import nixpkgs-stable {
 
-  outputs = {self, nixpkgs-unstable, nixpkgs-stable, ...}  @inputs:
-  let
+			inherit system;
 
-    target_system = "x86_64-linux";
+			config.allowUnfree = true;
 
-    stable = import inputs.nixpkgs-stable {
+		};
 
-        system = target_system;
+		unstable = import nixpkgs-unstable {
 
-        config.allowUnfree = true;
+			inherit system;
 
-    };
+			config.allowUnfree = true;
 
-    unstable = import inputs.nixpkgs-unstable {
+		};
 
-        system = target_system;
+  	in
+  	{
+	
+		nixosConfigurations.desktop = nixpkgs-stable.lib.nixosSystem {
 
-        config.allowUnfree = true;
+			specialArgs = {inherit inputs stable unstable; enableNvidia = true; choosenDesktop = "kde";};
 
-    };
+			modules = commonModules ++ [
+				./myModules/sys-settings.nix
+				./myModules/programs.nix
+			];
 
-  in
-  {
+		};
 
-    nixosConfigurations.dision = nixpkgs-stable.lib.nixosSystem {
-
-      specialArgs = {inherit inputs stable unstable;};
-
-      modules = [
-
-        ./configuration.nix
-
-        ./myModules/sys-settings.nix
-
-        ./myModules/desktop.nix
-
-        ./myModules/nvidia-drivers.nix
-
-        ./myModules/programs.nix
-
-      ];
-
-    };
-
-  };
-
-
+  	};
 }

@@ -1,29 +1,82 @@
-{pkgs, config, ...}:
+{pkgs, config, lib, enableNvidia,  choosenDesktop,...}:
 
 {
+	config = lib.mkMerge [
+		
+		#general settings
 
-    # Enable sound with pipewire.
+		{
+			nixpkgs.config.allowUnfree = true;
+	
+			networking.firewall.enable = true;
 
-    services.pulseaudio.enable = false;
+			nix.settings.experimental-features = ["nix-command" "flakes"];
 
-    security.rtkit.enable = true;
+			#sound
 
-    services.pipewire = {
+			services.pulseaudio.enable = false;
 
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
-        # If you want to use JACK applications, uncomment this
-        #jack.enable = true;
+			security.rtkit.enable = true;
 
-        # Use the WirePlumber session manager
-        #wireplumber.enable = true;
+			services.pipewire = {
+		
+				enable = true;
+				alsa.enable = true;
+				alsa.support32Bit = true;
+				pulse.enable = true;	
 
-    };
+			};
 
-    networking.firewall.enable = true;
+			services.xserver.enable = (choosenDesktop != "none");
+		}
 
-    nix.settings.experimental-features = ["nix-command" "flakes"];
+		#drivers
+
+		(lib.mkIf enableNvidia {
+	
+			services.xserver.videoDrivers = ["nvidia"];
+
+			hardware.nvidia = {
+		
+				open = false;
+		
+				package = config.boot.kernelPackages.nvidiaPackages.production;
+		
+			};
+		})		
+		
+		#desktop		
+		
+		(lib.mkIf (choosenDesktop == "kde") {
+		
+			services.displayManager.sddm.enable = true;
+
+			services.desktopManager.plasma6.enable = true;
+
+		})
+
+		(lib.mkIf (choosenDesktop == "gnome") {
+		
+			services.displayManager.gdm.enable = true;
+
+			services.desktopManager.gnome.enable = true;
+
+		})
+
+		(lib.mkIf (choosenDesktop == "lxqt") {
+		
+			services.displayManager.sddm.enable = true;
+
+			services.xserver.desktopManager.lxqt.enable = true;
+
+		})
+
+		(lib.mkIf (choosenDesktop == "xfce") {
+
+			services.xserver.displayManager.lightdm.enable = true;
+
+			services.xserver.desktopManager.xfce.enable = true;
+		})
+	];
 
 }

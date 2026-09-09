@@ -1,28 +1,28 @@
 {stable, unstable, ...}:
 
 {
+	programs.vscode = {
 
-    environment.systemPackages = [
+		enable = true;
+		package = stable.vscode;
+		
+		extensions = [
+			stable.vscode-extensions.ms-vscode.cpptools
+		];		
 
-        stable.git
-        stable.htop
-        stable.fastfetch
+	};	
 
-        stable.aseprite
-        stable.blender
+	environment.systemPackages = [
+	
+		stable.git
+		stable.htop
+		stable.fastfetch
+		
+		stable.aseprite
+		stable.blender
 
-        stable.librewolf
+		stable.librewolf
 
-        (stable.vscode-with-extensions.override {
-
-            vscodeExtensions = [
-
-                stable.vscode-extensions.ms-vscode.cpptools
-
-            ];
-
-        })
-
-    ];
+	];
 
 }

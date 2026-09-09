@@ -1,6 +1,30 @@
-{pkgs, config, lib, enableNvidia,  choosenDesktop,...}:
+{pkgs, config, lib, ...}:
+let
 
+	cfg = config.mySystem;
+
+in
 {
+	options.mySystem = {
+
+		enableNvidia = lib.mkOption {
+
+			type = lib.types.bool;
+
+			default = false;
+
+		};
+
+		chosenDesktop = lib.mkOption {
+
+			type = lib.types.enum ["none" "kde" "gnome" "lxqt" "xfce"];
+
+			default = "none";
+
+		};
+
+	};
+
 	config = lib.mkMerge [
 		
 		#general settings
@@ -27,12 +51,12 @@
 
 			};
 
-			services.xserver.enable = (choosenDesktop != "none");
+			services.xserver.enable = (cfg.chosenDesktop != "none");
 		}
 
 		#drivers
 
-		(lib.mkIf enableNvidia {
+		(lib.mkIf cfg.enableNvidia {
 	
 			services.xserver.videoDrivers = ["nvidia"];
 
@@ -47,7 +71,7 @@
 		
 		#desktop		
 		
-		(lib.mkIf (choosenDesktop == "kde") {
+		(lib.mkIf (cfg.chosenDesktop == "kde") {
 		
 			services.displayManager.sddm.enable = true;
 
@@ -55,7 +79,7 @@
 
 		})
 
-		(lib.mkIf (choosenDesktop == "gnome") {
+		(lib.mkIf (cfg.chosenDesktop == "gnome") {
 		
 			services.displayManager.gdm.enable = true;
 
@@ -63,7 +87,7 @@
 
 		})
 
-		(lib.mkIf (choosenDesktop == "lxqt") {
+		(lib.mkIf (cfg.chosenDesktop == "lxqt") {
 		
 			services.displayManager.sddm.enable = true;
 
@@ -71,7 +95,7 @@
 
 		})
 
-		(lib.mkIf (choosenDesktop == "xfce") {
+		(lib.mkIf (cfg.chosenDesktop == "xfce") {
 
 			services.xserver.displayManager.lightdm.enable = true;
 

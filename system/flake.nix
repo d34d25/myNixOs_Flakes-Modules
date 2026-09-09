@@ -37,11 +37,16 @@
 	
 		nixosConfigurations.desktop = nixpkgs-stable.lib.nixosSystem {
 
-			specialArgs = {inherit inputs stable unstable; enableNvidia = true; choosenDesktop = "kde";};
+			specialArgs = {inherit inputs stable unstable;};
 
 			modules = commonModules ++ [
 				./myModules/sys-settings.nix
 				./myModules/programs.nix
+
+				{
+					mySystem.enableNvidia = true;
+					mySystem.chosenDesktop = "kde";
+				}
 			];
 
 		};

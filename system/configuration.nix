@@ -69,7 +69,6 @@
 
 	};
 
-
   	#programs
 
 	programs.vscode = {

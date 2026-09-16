@@ -14,7 +14,6 @@
 		stable = import nixpkgs-stable {inherit system; config.allowUnfree = true;};
 
 		unstable = import nixpkgs-unstable {inherit system; config.allowUnfree = true;};
-	
 	in
 	{
 
@@ -48,6 +47,5 @@
 		};
 
 	};
-	
-	
+		
 }

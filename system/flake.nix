@@ -6,7 +6,7 @@
 
 		nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 	};
-	
+
 	outputs = {self, nixpkgs-stable, nixpkgs-unstable, ...} @inputs:
 	let
 		system = "x86_64-linux";
@@ -16,36 +16,60 @@
 		unstable = import nixpkgs-unstable {inherit system; config.allowUnfree = true;};
 	in
 	{
-
-		nixosConfigurations.desktop = nixpkgs-stable.lib.nixosSystem {
-	
+		nixosConfigurations.dev = nixpkgs-stable.lib.nixosSystem {
+			
 			specialArgs = {inherit inputs stable unstable;};
 
 			modules = [
-				
+
 				({config, ...}:
 				{
+
 					services.xserver.enable = true;
+				
+					#drivers
 
 					services.xserver.videoDrivers = ["nvidia"];
 
 					hardware.nvidia = {
-					
-						open = false;
+
+						open = true;
 						package = config.boot.kernelPackages.nvidiaPackages.production;
+					};
+
+					#desktop
+
+					services.xserver.desktopManager.xfce.enable = true;
+					services.displayManager.defaultSession = "xfce";
+
+					#programs
+
+					programs.vscode = {
+						
+						enable = true;
+						package = stable.vscode;
+						extensions = [stable.vscode-extensions.ms-vscode.cpptools];
 
 					};
 
-					services.xserver.displayManager.lightdm.enable = true;
-					services.xserver.desktopManager.xfce.enable = true;
+					environment.systemPackages = [
+
+						stable.git
+						stable.htop
+						stable.fastfetch
+						stable.aseprite
+						stable.blender
+						stable.librewolf						
+
+					];
 
 				})
-				
-				./configuration.nix
+			
+				./configuration.nix			
+	
 			];
-		
-		};
+
+		};	
 
 	};
-		
 }

@@ -59,7 +59,10 @@
 						stable.fastfetch
 						stable.aseprite
 						stable.blender
-						stable.librewolf						
+						stable.librewolf
+
+						stable.gpu-screen-recorder
+						stable.gpu-screen-recorder-gtk						
 
 					];
 
